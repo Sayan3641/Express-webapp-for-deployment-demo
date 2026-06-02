@@ -25,6 +25,12 @@ pipeline {
             }
         }
 
+        stage('Verify Zip') {
+            steps {
+                bat 'dir deployment.zip'
+            }
+        }
+
         stage('Deploy') {
             steps {
 
@@ -36,7 +42,8 @@ pipeline {
                     bat '''
                     aws lambda update-function-code ^
                     --function-name %FUNCTION_NAME% ^
-                    --zip-file fileb://deployment.zip
+                    --zip-file fileb://deployment.zip ^
+                    --region ap-south-1
                     '''
                 }
             }
