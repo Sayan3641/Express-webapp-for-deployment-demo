@@ -1,0 +1,15 @@
+{
+  "name": "express-demo",
+  "version": "1.0.0",
+  "description": "Express app deployed to AWS Lambda",
+  "main": "lambda.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"No tests configured\""
+  },
+  "type": "module",
+  "dependencies": {
+    "express": "^5.2.1",
+    "serverless-http": "^4.0.0"
+  }
+}
