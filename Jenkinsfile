@@ -8,22 +8,9 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/Sayan3641/Express-webapp-for-deployment-demo.git'
-            }
-        }
-
         stage('Install') {
             steps {
                 bat 'npm install'
-            }
-        }
-
-        stage('Verify AWS') {
-            steps {
-                bat 'aws sts get-caller-identity'
             }
         }
 
@@ -40,12 +27,29 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                bat '''
-                aws lambda update-function-code ^
-                --function-name %FUNCTION_NAME% ^
-                --zip-file fileb://deployment.zip
-                '''
+
+                withCredentials([
+                    string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+
+                    bat '''
+                    aws lambda update-function-code ^
+                    --function-name %FUNCTION_NAME% ^
+                    --zip-file fileb://deployment.zip
+                    '''
+                }
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Lambda deployment successful'
+        }
+
+        failure {
+            echo 'Lambda deployment failed'
         }
     }
 }
